@@ -16,14 +16,14 @@ Este projeto cria uma aplicação web interativa para comparar estatísticas de 
 - [Plotly](https://plotly.com/python/): Biblioteca para criação de gráficos interativos.
 
 ## Estrutura do Projeto
-
-project-root/
-│
-├── EUROLEAGUE.csv # Arquivo CSV com os dados da EuroLeague
-├── NBA.csv # Arquivo CSV com os dados da NBA
-├── tabela.py # Script principal da aplicação Streamlit
-└── README.md # Este arquivo README
-
+```bash
+    project-root/
+    │
+    ├── EUROLEAGUE.csv # Arquivo CSV com os dados da EuroLeague
+    ├── NBA.csv # Arquivo CSV com os dados da NBA
+    ├── tabela.py # Script principal da aplicação Streamlit
+    └── README.md # Este arquivo README
+```
 
 ## Pré-requisitos
 
