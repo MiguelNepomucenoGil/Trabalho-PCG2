@@ -30,7 +30,7 @@ df_nba = df_nba.rename(columns={'League': 'Liga',
                                 'Team': 'Time'})
 
 # Define as categorias para a seleção
-categorias = ['Dados','Comparação Liga','Comparação Jogadores']
+categorias = ['Dados','Comparação Liga','Comparação Jogadores', 'Análise Individual']
 
 # Adiciona um menu para a seleção da categoria
 categoria_selecionada = st.sidebar.selectbox("Selecione a liga:", categorias)
@@ -237,6 +237,116 @@ elif categoria_selecionada == 'Comparação Jogadores':
         
         # Filtra os dados com base nas ligas selecionadas
         filtered_df = combined_df[combined_df['Liga'].isin(ligas_selecionadas)]
+
+        # Agrupar por Liga e somar os valores da coluna selecionada
+        summed_df = filtered_df.groupby('Jogador')[coluna_selecionada].sum().reset_index()
+        
+        # Ordenar do maior para o menor e selecionar os top 10
+        summed_df = summed_df.sort_values(by=coluna_selecionada, ascending=False).head(10)
+        
+        # Cria o gráfico de Linhas
+        fig = px.box(summed_df, x='Jogador', y=coluna_selecionada, title=f'Soma de {coluna_selecionada} por Jogador')
+        st.plotly_chart(fig)
+
+elif categoria_selecionada == 'Análise Individual':
+    st.header('Comparação EuroLeague e NBA')
+    colunas_comparacao_dict = {
+        'Jogos Jogados': 'GP',
+        'Minutos Jogados': 'MIN',
+        'Arremessos de Três Pontos Tentados': '3PA',
+        'Lance Livre Convertido': 'FTM',
+        'Lance Livre Tentado': 'FTA',
+        'Turnover (Perda de Bola)': 'TOV',
+        'Rebotes': 'REB',
+        'Assistências': 'AST',
+        'Roubos de Bola': 'STL',
+        'Bloqueios': 'BLK',
+        'Pontos': 'PTS'
+    }
+    
+    # Inverso do dicionário para mapeamento posterior
+    colunas_comparacao_inv_dict = {v: k for k, v in colunas_comparacao_dict.items()}
+
+    # Cria um menu para a seleção do tipo de gráfico
+    tipo_grafico = st.selectbox("Selecione o tipo de gráfico:", ['Barras', 'Dispersão', 'Linhas', 'Caixa'])
+
+    # Cria um menu para a seleção da coluna para comparação
+    coluna_selecionada_renomeada = st.selectbox("Selecione a coluna para comparação:", list(colunas_comparacao_dict.keys()))
+
+    # Obtém o nome original da coluna selecionada
+    coluna_selecionada = colunas_comparacao_dict[coluna_selecionada_renomeada]
+
+    combined_df = pd.concat([df_euroleague, df_nba], ignore_index=True)
+    
+    # Adiciona uma seleção para a liga a ser exibida
+    jogador_selecionado = st.selectbox("Selecione o jogador para exibição:", combined_df['Jogador'])
+
+    # Cria os gráficos de acordo com o tipo selecionado
+    if tipo_grafico == 'Barras':
+        combined_df = pd.concat([df_euroleague, df_nba], ignore_index=True)
+        # st.write("DataFrame Combinado:")
+        # st.write(combined_df)
+
+        # Filtra os dados com base nas ligas selecionadas
+        filtered_df = combined_df[combined_df['Jogador'] == jogador_selecionado]
+
+        # Agrupar por Liga e somar os valores da coluna selecionada
+        summed_df = filtered_df.groupby('Jogador')[coluna_selecionada].sum().reset_index()
+        
+        # Ordenar do maior para o menor e selecionar os top 10
+        summed_df = summed_df.sort_values(by=coluna_selecionada, ascending=False).head(10)
+
+        # Mostra o DataFrame somado
+        # st.write("DataFrame com Valores Somados:")
+        # st.write(summed_df)
+
+        # Cria o gráfico de barras
+        fig = px.bar(summed_df, x='Jogador', y=coluna_selecionada, title=f'Soma de {coluna_selecionada} por Jogador')
+        st.plotly_chart(fig)
+
+    elif tipo_grafico == 'Dispersão':
+        combined_df = pd.concat([df_euroleague, df_nba], ignore_index=True)
+        # st.write("DataFrame Combinado:")
+        # st.write(combined_df)
+
+        # Filtra os dados com base nas ligas selecionadas
+        filtered_df = combined_df[combined_df['Jogador'].isin(jogador_selecionado)]
+
+        # Agrupar por Liga e somar os valores da coluna selecionada
+        summed_df = filtered_df.groupby('Jogador')[coluna_selecionada].sum().reset_index()
+        
+        # Ordenar do maior para o menor e selecionar os top 10
+        summed_df = summed_df.sort_values(by=coluna_selecionada, ascending=False).head(10)
+
+        # Mostra o DataFrame somado
+        # st.write("DataFrame com Valores Somados:")
+        # st.write(summed_df)
+
+        # Cria o gráfico de Dispersão
+        fig = px.scatter(summed_df, x='Jogador', y=coluna_selecionada, title=f'Soma de {coluna_selecionada} por Jogador')
+        st.plotly_chart(fig)
+
+    elif tipo_grafico == 'Linhas':       
+        combined_df = pd.concat([df_euroleague, df_nba], ignore_index=True)
+        
+        # Filtra os dados com base nas ligas selecionadas
+        filtered_df = combined_df[combined_df['Jogador'].isin(jogador_selecionado)]
+
+        # Agrupar por Liga e somar os valores da coluna selecionada
+        summed_df = filtered_df.groupby('Jogador')[coluna_selecionada].sum().reset_index()
+        
+        # Ordenar do maior para o menor e selecionar os top 10
+        summed_df = summed_df.sort_values(by=coluna_selecionada, ascending=False).head(10)
+
+        # Cria o gráfico de Linhas
+        fig = px.line(summed_df, x='Jogador', y=coluna_selecionada, title=f'Soma de {coluna_selecionada} por Jogador')
+        st.plotly_chart(fig)
+
+    elif tipo_grafico == 'Caixa':
+        combined_df = pd.concat([df_euroleague, df_nba], ignore_index=True)
+        
+        # Filtra os dados com base nas ligas selecionadas
+        filtered_df = combined_df[combined_df['Jogador'].isin(jogador_selecionado)]
 
         # Agrupar por Liga e somar os valores da coluna selecionada
         summed_df = filtered_df.groupby('Jogador')[coluna_selecionada].sum().reset_index()
