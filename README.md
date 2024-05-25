@@ -1,7 +1,8 @@
 **Leitura e Manipulação de Dados de Dengue e Chuvas em Python**
 
 Este código Python utiliza as bibliotecas Streamlit, Pandas e Plotly para carregar, analisar e visualizar dados de dengue e chuva em São Paulo.
-Requisitos:
+
+Requisitos: 
 Python 3.7 ou superior
 Bibliotecas: streamlit, pandas, plotly (instale com pip install streamlit pandas plotly)
 Arquivos de dados: dengue24_mes.csv e chuvas sao paulo mensal.csv
